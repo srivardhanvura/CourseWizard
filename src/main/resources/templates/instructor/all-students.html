@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
+  <title>Students</title>
+</head>
+<body>
+
+<div th:if="${userType == 'student'}">
+  <div th:replace="fragments/student-navbar :: navbar"></div>
+</div>
+<div th:if="${userType == 'instructor'}">
+  <div th:replace="fragments/instructor-navbar :: navbar"></div>
+</div>
+
+<div class="container mt-5">
+  <div class="row" th:unless="${students == null or #lists.isEmpty(students)}">
+    <h3 class="display-6 text-center">These are the students from your department</h3>
+    <hr class="border border-danger border-2 opacity-50">
+    <th:block th:each="student : ${students}">
+      <div class="col-md-6 mb-4">
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title" th:text="${student.firstName} + ' ' + ${student.lastName}"></h5>
+            <p class="card-title" th:text="'Student ID: ' + ${student.id}"></p>
+            <p class="card-text" th:text="'Email: ' +${student.email}"></p>
+          </div>
+        </div>
+      </div>
+    </th:block>
+  </div>
+</div>
+
+</body>
+</html>

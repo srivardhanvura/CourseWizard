@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Course Details</title>
+
+    <!-- Include Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+    <!-- Include FontAwesome CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+
+    <!-- Add custom styles for colors -->
+    <style>
+        body {
+            background-color: #f2f2f2;
+        }
+
+        .container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            color: #007bff;
+        }
+
+        .average-rating {
+            color: #ffc107; /* Gold color */
+        }
+
+        .review {
+            background-color: #fff;
+            margin-bottom: 10px;
+            padding: 10px;
+            border-radius: 5px;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .back-button {
+            background-color: #007bff;
+            border: none;
+            border-radius: 50%;
+            color: #fff;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 20px;
+            position: fixed; /* Fixed position for the button */
+            top: 20px;
+            left: 20px;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-6">
+            <a href="javascript:history.back()" class="back-button"><i class="fas fa-arrow-left"></i></a>
+            <h2 th:text="${course.title}"></h2>
+            <p th:text="${course.description}"></p>
+            <p><strong>Location:</strong> <span th:text="${course.location}"></span></p>
+            <p><strong>Timings:</strong> <span th:text="${course.timings}"></span></p>
+            <p><strong>Course Code:</strong> <span th:text="${course.code}"></span></p>
+            <p><strong>Credits:</strong> <span th:text="${course.credits}"></span></p>
+
+            <!-- Display average rating as a fractional rating -->
+            <div th:unless="${averageScore == null}" class="average-rating mt-3">
+                <strong>Average Rating:</strong>
+                <span th:utext="${'&#9733;'.repeat(averageScore.intValue())}"></span>
+                <span th:utext="${'&#9734;'.repeat(5 - averageScore.intValue())}"></span>
+                <span th:text="${averageScore}"></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-5" th:unless="${course.reviews == null or #lists.isEmpty(course.reviews)}">
+        <div class="col-md-12">
+            <h3>Reviews</h3>
+            <ul class="list-group">
+                <li th:each="review : ${course.reviews}" class="list-group-item review">
+                    <!-- Display rating as stars -->
+                    <span th:utext="${'&#9733;'.repeat(review.rating)}"></span>
+                    <span th:utext="${'&#9734;'.repeat(5 - review.rating)}"></span>
+                    <p th:text="${review.comment}"></p>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
+    <title>Instructors</title>
+</head>
+<body>
+
+<div th:if="${userType == 'student'}">
+    <div th:replace="fragments/student-navbar :: navbar"></div>
+</div>
+<div th:if="${userType == 'instructor'}">
+    <div th:replace="fragments/instructor-navbar :: navbar"></div>
+</div>
+
+<div class="container mt-5">
+    <div class="row" th:unless="${deptInstructors == null or #lists.isEmpty(deptInstructors)}">
+        <h3 class="display-6 text-center">These are the instructors from your department</h3>
+        <hr class="border border-danger border-2 opacity-50">
+        <th:block th:each="instructor : ${deptInstructors}">
+            <div class="col-md-6 mb-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title" th:text="${instructor.firstName} + ' ' + ${instructor.lastName}"></h5>
+                        <p class="card-text" th:text="'Email: ' +${instructor.email}"></p>
+                        <p class="card-text" th:text="'Office address: ' +${instructor.office}"></p>
+                    </div>
+                </div>
+            </div>
+        </th:block>
+    </div>
+
+    <div class="row" th:unless="${nonDeptInstructors == null or #lists.isEmpty(nonDeptInstructors)}">
+        <h3 class="display-6 text-center">Instructors from other departments</h3>
+        <hr class="border border-danger border-2 opacity-50">
+        <th:block th:each="instructor : ${nonDeptInstructors}">
+            <div class="col-md-6 mb-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title" th:text="${instructor.firstName} + ' ' + ${instructor.lastName}"></h5>
+                        <p class="card-text" th:text="'Email: ' +${instructor.email}"></p>
+                        <p class="card-text" th:text="'Office address: ' +${instructor.office}"></p>
+                    </div>
+                </div>
+            </div>
+        </th:block>
+    </div>
+</div>
+
+</body>
+</html>

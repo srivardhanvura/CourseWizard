@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
+    <title>Website Title</title>
+</head>
+<body>
+<style>
+    .navbar {
+        min-height: 120px;
+    }
+</style>
+<nav th:fragment="navbar" class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <a class="navbar-brand" href="/">Course Wizard</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav">
+            <li class="nav-item">
+                <a class="nav-link" th:href="@{/instructor/allCourses}">All Courses</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" th:href="@{/instructor/allInstructors}">Instructors</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" th:href="@{/instructor/allStudents}">Students</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" th:href="@{/profile}">Profile</a>
+            </li>
+        </ul>
+        <ul class="navbar-nav ml-auto"> <!-- Use ml-auto class to align to the right -->
+            <li class="nav-item">
+                <form th:action="@{/logout}" method="POST">
+                    <button type="submit" class="btn btn-link" style="text-decoration: none; color:#888888;">Logout</button>
+                </form>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+</body>
+</html>

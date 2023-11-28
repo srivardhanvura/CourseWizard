@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
+    <title>Admin Home</title>
+    <style>
+        /* Add your custom CSS styles here */
+        .tile {
+            color: #fff;
+            padding: 40px;
+            border: 2px solid #ccc;
+            border-radius: 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .tile a {
+            color: #fff;
+            text-decoration: none;
+        }
+
+        .tile:hover {
+            background-color: #333;
+        }
+    </style>
+</head>
+<body>
+<div th:replace="fragments/admin-navbar :: navbar"></div>
+<div class="container mt-5">
+    <div class="row mx-5">
+        <div class="col-md-6">
+            <div class="tile" style="background-color: #B2DBBF">
+                <a href="https://www.example.com">
+                    <h3>Tile 1</h3>
+                    <p>Visit Example.com</p>
+                </a>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="tile"  style="background-color: #FFABAB">
+                <a href="https://www.google.com">
+                    <h3>Tile 2</h3>
+                    <p>Visit Google.com</p>
+                </a>
+            </div>
+        </div>
+        <div class="col-md-6 mt-2">
+            <div class="tile" style="background-color: #FFC3A0">
+                <a href="https://www.github.com">
+                    <h3>Tile 3</h3>
+                    <p>Visit GitHub.com</p>
+                </a>
+            </div>
+        </div>
+        <div class="col-md-6 mt-2">
+            <div class="tile" style="background-color: #C490E4">
+                <a href="https://www.facebook.com">
+                    <h3>Tile 4</h3>
+                    <p>Visit Facebook.com</p>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Include Bootstrap JS and Popper.js (for dropdowns, tooltips, and popovers) -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+</body>
+</html>

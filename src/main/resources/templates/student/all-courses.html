@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
+    <title>All Courses</title>
+</head>
+<body>
+<div th:replace="fragments/student-navbar :: navbar"></div>
+<div class="mt-4 mx-3">
+    <div th:if="${student.courses == null or #lists.isEmpty(student.courses)} and ${deptCourses == null or #lists.isEmpty(deptCourses)}">
+        <h3 class="display-6 text-center">There are no courses in your department at the moment. Please check again later.</h3>
+        <hr class="border border-danger border-2 opacity-50">
+    </div>
+    <div class="text-center" th:unless="${student.courses == null or #lists.isEmpty(student.courses)} and ${deptCourses == null or #lists.isEmpty(deptCourses)}">
+        <h3 class="display-6">Here is the list of all the courses in your department</h3>
+        <hr class="border border-danger border-2 opacity-50">
+        <table class="table mt-4 table-dark table-striped">
+            <thead>
+            <tr>
+                <th>Course code</th>
+                <th>Course Name</th>
+                <th>Instructor</th>
+                <th>Class Room</th>
+                <th>Timings</th>
+                <th>Credits</th>
+                <th>Remaining seats</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="course : ${student.courses}">
+                <td> <a th:href="@{/course/{courseId}(courseId=${course.id})}" th:text="${course.code}"></a></td>
+                <td th:text="${course.title}"></td>
+                <td th:text="${course.instructor.firstName} + ' ' + ${course.instructor.lastName}"></td>
+                <td th:text="${course.location}"></td>
+                <td th:text="${course.timings}"></td>
+                <td th:text="${course.credits}"></td>
+                <td th:text="${course.totalStrength} - ${course.currentStrength}"></td>
+                <td>
+                    <a th:href="@{/student/dropCourse(studentId=${student.id}, courseId=${course.id})}" class="btn btn-danger mb-3">Drop course</a>
+                </td>
+            </tr>
+            <tr th:each="course : ${deptCourses}">
+                <td> <a th:href="@{/course/{courseId}(courseId=${course.id})}" th:text="${course.code}"></a></td>
+                <td th:text="${course.title}"></td>
+                <td th:text="${course.instructor.firstName} + ' ' + ${course.instructor.lastName}"></td>
+                <td th:text="${course.location}"></td>
+                <td th:text="${course.timings}"></td>
+                <td th:text="${course.credits}"></td>
+                <td th:text="${course.totalStrength} - ${course.currentStrength}"></td>
+                <td>
+                    <a th:if="${course.totalStrength} - ${course.currentStrength} > 0" th:href="@{/student/enrolCourse(studentId=${student.id}, courseId=${course.id})}" class="btn btn-success mb-3">Enroll</a>
+                    <p th:if="${course.totalStrength} - ${course.currentStrength} == 0">Class is full</p>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <br><br>
+
+    <div class="text-center" th:unless="${nonDeptCourses == null or #lists.isEmpty(nonDeptCourses)}">
+        <h3 class="display-6">Courses from other departments</h3>
+        <hr class="border border-danger border-2 opacity-50">
+        <table class="table mt-4 table-light">
+            <thead>
+            <tr>
+                <th>Course code</th>
+                <th>Course Name</th>
+                <th>Instructor</th>
+                <th>Class Room</th>
+                <th>Timings</th>
+                <th>Credits</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="course : ${nonDeptCourses}">
+                <td> <a th:href="@{/course/{courseId}(courseId=${course.id})}" th:text="${course.code}"></a></td>
+                <td th:text="${course.title}"></td>
+                <td th:text="${course.instructor.firstName} + ' ' + ${course.instructor.lastName}"></td>
+                <td th:text="${course.location}"></td>
+                <td th:text="${course.timings}"></td>
+                <td th:text="${course.credits}"></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <br><br>
+    <div class="text-center" th:unless="${inactiveCourses == null or #lists.isEmpty(inactiveCourses)}">
+        <h3 class="display-6">Courses which are not being offered currently</h3>
+        <hr class="border border-danger border-2 opacity-50">
+        <table class="table mt-4 table-danger">
+            <thead>
+            <tr>
+                <th>Course code</th>
+                <th>Course Name</th>
+                <th>Instructor</th>
+                <th>Department</th>
+                <th>Credits</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="course : ${inactiveCourses}">
+                <td> <a th:href="@{/course/{courseId}(courseId=${course.id})}" th:text="${course.code}"></a></td>
+                <td th:text="${course.title}"></td>
+                <td th:text="${course.instructor.firstName} + ' ' + ${course.instructor.lastName}"></td>
+                <td th:text="${course.department}"></td>
+                <td th:text="${course.credits}"></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+</body>
+</html>
