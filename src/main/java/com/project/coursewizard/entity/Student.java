@@ -1,5 +1,7 @@
 package com.project.coursewizard.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;
@@ -29,6 +31,7 @@ public class Student {
     @Column(name = "department")
     private String department;
 
+    @JsonManagedReference
     @ManyToMany(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH},
             fetch = FetchType.LAZY)
     @JoinTable(name = "course_student",

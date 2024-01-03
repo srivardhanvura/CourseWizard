@@ -3,12 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
-  <title>Add Student</title>
+  <title th:if="${userType == 'student'}">Add Student</title>
+  <title th:if="${userType == 'instructor'}">Add Instructor</title>
 </head>
 
 <body>
 <div th:replace="fragments/admin-navbar :: navbar"></div>
 <div th:if="${userType == 'student'}" class="container mt-5">
+  <h2>Registration Form</h2>
   <form action="#" th:action="@{/admin/saveStudent}" th:object="${student}" method="POST">
     <input type="hidden" th:field="${student.id}" class="form-control mb-4 w-25" placeholder="id">
     <div class="mb-3">
@@ -20,18 +22,51 @@
       <input type="text" th:field="${student.lastName}" class="form-control" id="lastName" placeholder="Enter Last Name" required>
     </div>
     <div class="mb-3">
+      <input type="hidden" th:field="${student.userName}" class="form-control" id="userName" placeholder="Enter User Name">
+    </div>
+    <div class="mb-3">
       <label for="email" class="form-label">Email Address</label>
       <input type="email" th:field="${student.email}" class="form-control" id="email" placeholder="Enter Email" required>
     </div>
     <div class="mb-3">
       <label for="department" class="form-label">Department</label>
-      <select th:field="${student.course}" class="form-select" id="department" required>
+      <select th:field="${student.department}" class="form-select" id="department" required>
         <option value="" selected disabled>Select Department</option>
-        <option value="HR">HR</option>
-        <option value="Finance">Finance</option>
-        <option value="IT">IT</option>
-        <option value="Marketing">Marketing</option>
-        <!-- Add more department options as needed -->
+        <option th:each="code : ${departments}" th:value="${code}" th:text="${code}"></option>
+      </select>
+    </div>
+    <button type="submit" class="btn btn-primary">Submit</button>
+  </form>
+</div>
+
+
+<div th:if="${userType == 'instructor'}" class="container mt-5">
+  <form action="#" th:action="@{/admin/saveInstructor}" th:object="${instructor}" method="POST">
+    <input type="hidden" th:field="${instructor.id}" class="form-control mb-4 w-25" placeholder="id">
+    <div class="mb-3">
+      <label for="firstNameInst" class="form-label">First Name</label>
+      <input type="text" th:field="${instructor.firstName}" class="form-control" id="firstNameInst" placeholder="Enter First Name" required>
+    </div>
+    <div class="mb-3">
+      <label for="lastNameInst" class="form-label">Last Name</label>
+      <input type="text" th:field="${instructor.lastName}" class="form-control" id="lastNameInst" placeholder="Enter Last Name" required>
+    </div>
+    <div class="mb-3">
+      <input type="hidden" th:field="${instructor.userName}" class="form-control" id="userNameInst" placeholder="Enter User Name">
+    </div>
+    <div class="mb-3">
+      <label for="emailInst" class="form-label">Email Address</label>
+      <input type="email" th:field="${instructor.email}" class="form-control" id="emailInst" placeholder="Enter Email" required>
+    </div>
+    <div class="mb-3">
+      <label for="officeInst" class="form-label">Office Address</label>
+      <input type="text" th:field="${instructor.office}" class="form-control" id="officeInst" placeholder="Enter Office Address" required>
+    </div>
+    <div class="mb-3">
+      <label for="departmentInst" class="form-label">Department</label>
+      <select th:field="${instructor.department}" class="form-select" id="departmentInst" required>
+        <option value="" selected disabled>Select Department</option>
+        <option th:each="code : ${departments}" th:value="${code}" th:text="${code}"></option>
       </select>
     </div>
     <button type="submit" class="btn btn-primary">Submit</button>

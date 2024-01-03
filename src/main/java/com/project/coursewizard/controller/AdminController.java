@@ -1,14 +1,14 @@
 package com.project.coursewizard.controller;
 
-import com.project.coursewizard.dao.CourseDAO;
-import com.project.coursewizard.dao.InstructorDAO;
-import com.project.coursewizard.dao.StudentDAO;
-import com.project.coursewizard.entity.Student;
+import com.project.coursewizard.dao.*;
+import com.project.coursewizard.entity.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Controller
 @RequestMapping("/admin")
@@ -17,12 +17,16 @@ public class AdminController {
     InstructorDAO instructorDAO;
     CourseDAO courseDAO;
     StudentDAO studentDAO;
+    DepartmentDAO departmentDAO;
+    UserDAO userDAO;
 
     @Autowired
-    AdminController(InstructorDAO instructorDAO, CourseDAO courseDAO, StudentDAO studentDAO){
+    AdminController(InstructorDAO instructorDAO, CourseDAO courseDAO, StudentDAO studentDAO, DepartmentDAO departmentDAO, UserDAO userDAO){
         this.instructorDAO = instructorDAO;
         this.courseDAO = courseDAO;
         this.studentDAO = studentDAO;
+        this.departmentDAO = departmentDAO;
+        this.userDAO = userDAO;
     }
 
     @GetMapping("/")
@@ -40,17 +44,79 @@ public class AdminController {
         Student student = new Student();
         model.addAttribute("userType", "student");
         model.addAttribute("student", student);
+        List<String> codes = new ArrayList<>();
+        List<Department> departments = departmentDAO.findAll();
+        for(Department department:departments){
+            codes.add(department.getCode());
+        }
+        model.addAttribute("departments", codes);
         return "admin/add-user";
     }
 
+    @PostMapping("/saveStudent")
+    public String saveStudent(@ModelAttribute("student") Student student){
+        String userName = student.getFirstName().toLowerCase() + "_" + student.getLastName().toLowerCase();
+        student.setUserName(userName);
+        User user = new User(userName, "{noop}pass", 1);
+
+        studentDAO.save(student);
+        userDAO.save(user);
+        return "redirect:/admin/home";
+    }
+
     @GetMapping("/addInstructor")
-    public String addInstructor(){
-        return null;
+    public String addInstructor(Model model){
+        Instructor instructor = new Instructor();
+        model.addAttribute("userType", "instructor");
+        model.addAttribute("instructor", instructor);
+        List<String> codes = new ArrayList<>();
+        List<Department> departments = departmentDAO.findAll();
+        for(Department department:departments){
+            codes.add(department.getCode());
+        }
+        model.addAttribute("departments", codes);
+        return "admin/add-user";
+    }
+
+    @PostMapping("/saveInstructor")
+    public String saveStudent(@ModelAttribute("instructor") Instructor instructor){
+        String userName = instructor.getFirstName().toLowerCase() + "_" + instructor.getLastName().toLowerCase();
+        instructor.setUserName(userName);
+        User user = new User(userName, "{noop}pass", 1);
+
+        instructorDAO.save(instructor);
+        userDAO.save(user);
+        return "redirect:/admin/home";
     }
 
     @GetMapping("/addCourse")
-    public String addCourse(){
-        return null;
+    public String addCourse(Model model){
+        List<Department> departments = departmentDAO.findAll();
+        model.addAttribute("course", new Course());
+        model.addAttribute("departments", departments);
+        return "admin/add-course";
+    }
+
+    @GetMapping("/getInstructors/{departmentId}")
+    @ResponseBody
+    public List<Instructor> getInstructorsByDepartment(@PathVariable("departmentId") String departmentId) {
+        return instructorDAO.findAllActiveInstructorsInDept(departmentId);
+    }
+
+    @PostMapping("/saveCourse")
+    public String saveCourse(@ModelAttribute("course") Course course, Model model) {
+        String courseCode = course.getCode();
+        String dept = course.getDepartment();
+        List<String> courseIDs = courseDAO.findAllCourseIDsInDept(dept);
+        for(String code:courseIDs){
+            if(code.equalsIgnoreCase(dept + " " + courseCode)){
+                model.addAttribute("error", "Course code already assigned to another course.");
+                model.addAttribute("course", course);
+                return "admin/add-course";
+            }
+        }
+        course.setCurrentStrength(0);
+        return "redirect:/admin/home";
     }
 
     @GetMapping("/deleteStudent")

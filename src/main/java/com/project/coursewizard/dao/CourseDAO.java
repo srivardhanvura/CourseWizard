@@ -35,4 +35,7 @@ public interface CourseDAO extends JpaRepository<Course, Integer> {
 
     @Query("Select c from Course c where c.department!=:dept order by c.code")
     List<Course> findAllCoursesNotInDept(@Param("dept") String dept);
+
+    @Query("Select c.code from Course c where c.department=:dept order by c.code")
+    List<String> findAllCourseIDsInDept(@Param("dept") String dept);
 }

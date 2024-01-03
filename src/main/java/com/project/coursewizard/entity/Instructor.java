@@ -1,5 +1,6 @@
 package com.project.coursewizard.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
 import java.util.List;
@@ -31,6 +32,7 @@ public class Instructor {
     @Column(name = "department")
     private String department;
 
+    @JsonManagedReference
     @OneToMany(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH},
             mappedBy = "instructor")
     private List<Course> courses;
