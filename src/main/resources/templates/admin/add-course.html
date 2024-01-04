@@ -11,32 +11,44 @@
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script th:inline="javascript">
-    $(document).ready(function() {
-        $('#department').change(function() {
-            var selectedDeptId = $(this).val();
-            if (selectedDeptId) {
-                $.ajax({
-                    type: 'GET',
-                    url: '/admin/getInstructors/' + selectedDeptId,
-                    success: function(data) {
-                        var instructorsSelect = $('#instructor');
-                        instructorsSelect.empty().append('<option value="" selected disabled>Select Instructor</option>');
-                        $.each(data, function(index, instructor) {
-                            instructorsSelect.append('<option value="' + instructor.id + '">' + instructor.firstName + ' ' + instructor.lastName + '</option>');
-                        });
-                        $('#main-div').show();
-                    },
-                    error: function(xhr, status, error) {
-                        console.log("Error occurred: " + error);
-                        alert("An error occurred while fetching instructors. Please try again later.");
-                    }
-                });
-            } else {
-                $('#instructor').empty().append('<option value="" selected disabled>Select Instructor</option>');
-            }
-        });
-    });
+        $(document).ready(function() {
+	function handleChangeEvent() {
+		var selectedDeptId = $('#department').val();
+		if (selectedDeptId) {
+			$.ajax({
+				type: 'GET',
+				url: '/admin/getInstructors/' + selectedDeptId,
+				success: function(data) {
+					var instructorsSelect = $('#instructor');
+					instructorsSelect.empty().append('<option value="" selected disabled>Select Instructor</option>');
+					var selectedInstructorId = [[(${course != null ? course.instructor : null})]];
+					$.each(data, function(index, instructor) {
+						var option = '<option value="' + instructor.id + '"';
+						if (selectedInstructorId && selectedInstructorId.id === instructor.id) {
+							option += ' selected';
+						}
+						option += '>' + instructor.firstName + ' ' + instructor.lastName + '</option>';
+						instructorsSelect.append(option);
+						$('#main-div').show();
+					});
+				},
+				error: function(xhr, status, error) {
+					console.log("Error occurred: " + error);
+					alert("An error occurred while fetching instructors. Please try again later.");
+				}
+			});
+		} else {
+			$('#instructor').empty().append('<option value="" selected disabled>Select Instructor</option>');
+		}
+	}
+	$('#department').change(handleChangeEvent);
+	var displayMainDiv = [[${displayMainDiv}]];
+	if (displayMainDiv) {
+		handleChangeEvent();
+	}
+});
     </script>
+
     <h2>Course Form</h2>
     <p th:if="${error != null}" style="color: red" th:text="${error}"></p>
     <form id="addCourseForm" action="#" th:action="@{/admin/saveCourse}" th:object="${course}" method="post">
@@ -48,7 +60,7 @@
             </select>
         </div>
 
-        <div id="main-div" style="display: none;">
+        <div id="main-div" th:style="${displayMainDiv} ? 'display: block;' : 'display: none;'">
         <div class="mb-3">
             <label for="instructor" class="form-label">Instructor</label>
             <select class="form-select" th:field="${course.instructor}" id="instructor" name="instructorId">
@@ -97,7 +109,7 @@
 
         <div class="mb-3">
             <label for="code" class="form-label">Course Code</label>
-            <input type="number" th:field="${course.code}" class="form-control" id="code" placeholder="Enter Course Code" required>
+            <input type="number" min="1" th:field="${course.code}" class="form-control" id="code" placeholder="Enter Course Code" required>
         </div>
 
         <input type="hidden" th:field="${course.id}" class="form-control mb-4 w-25" placeholder="id">
@@ -107,6 +119,7 @@
         </div>
     </form>
 </div>
+
 <!-- Include Bootstrap JS and Popper.js (for dropdowns, tooltips, and popovers) -->
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>

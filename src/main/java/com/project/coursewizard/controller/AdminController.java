@@ -110,12 +110,17 @@ public class AdminController {
         List<String> courseIDs = courseDAO.findAllCourseIDsInDept(dept);
         for(String code:courseIDs){
             if(code.equalsIgnoreCase(dept + " " + courseCode)){
+                List<Department> departments = departmentDAO.findAll();
+                model.addAttribute("departments", departments);
+                model.addAttribute("displayMainDiv", true);
                 model.addAttribute("error", "Course code already assigned to another course.");
                 model.addAttribute("course", course);
                 return "admin/add-course";
             }
         }
         course.setCurrentStrength(0);
+        course.setCode(dept + " " + courseCode);
+        courseDAO.save(course);
         return "redirect:/admin/home";
     }
 
