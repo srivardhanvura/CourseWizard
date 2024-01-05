@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 @RequestMapping("/admin")
@@ -124,9 +125,29 @@ public class AdminController {
         return "redirect:/admin/home";
     }
 
-    @GetMapping("/deleteStudent")
-    public String deleteStudent(){
-        return null;
+    @GetMapping("/getInstructorCourses/{instId}")
+    @ResponseBody
+    public List<Course> getInstructorCourses(@PathVariable("instId") int instId) {
+        return courseDAO.findActiveCoursesByInstructorId(instId);
+    }
+
+    @GetMapping("/deleteCourse")
+    public String deleteCourse(Model model){
+        List<Department> departments = departmentDAO.findAll();
+        model.addAttribute("departments", departments);
+        return "admin/delete-course";
+    }
+
+    @GetMapping("/removeCourse/{courseId}")
+    public String removeCourse(@PathVariable("courseId") int courseId){
+        Optional<Course> optionalCourse = courseDAO.findById(courseId);
+        Course course = null;
+        if(optionalCourse.isPresent()){
+            course = optionalCourse.get();
+        }
+        course.setStatus("Inactive");
+        courseDAO.save(course);
+        return "redirect:/admin/home";
     }
 
     @GetMapping("/deleteInstructor")
@@ -134,8 +155,8 @@ public class AdminController {
         return null;
     }
 
-    @GetMapping("/deleteCourse")
-    public String deleteCourse(){
+    @GetMapping("/deleteStudent")
+    public String deleteStudent(){
         return null;
     }
 

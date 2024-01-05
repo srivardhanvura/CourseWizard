@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
+  <title>Delete Course</title>
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+  <script th:inline="javascript">
+        $(document).ready(function() {
+	function handleDeptChangeEvent() {
+		var selectedDeptId = $('#department').val();
+		if (selectedDeptId) {
+			$.ajax({
+				type: 'GET',
+				url: '/admin/getInstructors/' + selectedDeptId,
+				success: function(data) {
+					var instructorsSelect = $('#instructor');
+					instructorsSelect.empty().append('<option value="" selected disabled>Select Instructor</option>');
+					$.each(data, function(index, instructor) {
+						var option = '<option value="' + instructor.id + '"';
+						option += '>' + instructor.firstName + ' ' + instructor.lastName + '</option>';
+						instructorsSelect.append(option);
+						$('#main-div').show();
+					});
+				},
+				error: function(xhr, status, error) {
+					console.log("Error occurred: " + error);
+					alert("An error occurred while fetching instructors. Please try again later.");
+				}
+			});
+		} else {
+			$('#instructor').empty().append('<option value="" selected disabled>Select Instructor</option>');
+		}
+	}
+	function handleInstChangeEvent() {
+		var selectedInstId = $('#instructor').val();
+		if (selectedInstId) {
+			$.ajax({
+				type: 'GET',
+				url: '/admin/getInstructorCourses/' + selectedInstId,
+				success: function(data) {
+				    var table = $('#tbody');
+				    table.empty().append('');
+					$.each(data, function(index, course) {
+						var tr = '<tr><td>' + course.code + '</td><td>' + course.description + '</td><td>';
+						tr +=  '<a href="/admin/removeCourse/' + course.id + '" class="btn btn-danger mb-3">Delete</a>';
+						tr += '</td></tr>';
+						table.append(tr);
+					});
+					$('#table').show();
+				},
+				error: function(xhr, status, error) {
+					console.log("Error occurred: " + error);
+					alert("An error occurred while fetching instructors. Please try again later.");
+				}
+			});
+		} else {
+			$('#tbody').empty().append('');
+		}
+	}
+	$('#department').change(handleDeptChangeEvent);
+	$('#instructor').change(handleInstChangeEvent);
+});
+    </script>
+
+</head>
+<body>
+<div th:replace="fragments/admin-navbar :: navbar"></div>
+<div class="container mt-5">
+  <div class="mb-3">
+    <label for="department" class="form-label">Department</label>
+    <select class="form-select" id="department" name="departmentId">
+      <option value="" selected disabled>Select Department</option>
+      <option th:each="dept : ${departments}" th:value="${dept.code}" th:text="${dept.name}"></option>
+    </select>
+  </div>
+
+  <div id="main-div" style="display: none;">
+    <div class="mb-3">
+      <label for="instructor" class="form-label">Instructor</label>
+      <select class="form-select" id="instructor" name="instructorId">
+        <option value="" selected disabled>Select Instructor</option>
+      </select>
+    </div>
+    <table class="table mt-4 table-dark table-striped" id="table" style="display: none;">
+      <thead>
+      <tr>
+        <th>Course code</th>
+        <th>Course Name</th>
+        <th>Actions</th>
+      </tr>
+      </thead>
+      <tbody id="tbody">
+
+      </tbody>
+    </table>
+  </div>
+
+</div>
+
+<!-- Include Bootstrap JS and Popper.js (for dropdowns, tooltips, and popovers) -->
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+</body>
+</html>
