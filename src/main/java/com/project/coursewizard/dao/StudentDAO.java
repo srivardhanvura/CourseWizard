@@ -15,4 +15,6 @@ public interface StudentDAO extends JpaRepository<Student, Integer> {
     Student findCoursesByStudentId(@Param("id") int id);
 
     List<Student> findByDepartment(String department);
+
+    List<Student> findByUserNameStartingWith(String prefix);
 }

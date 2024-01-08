@@ -59,7 +59,6 @@ public class PublicController {
 
     @GetMapping("/custom-logout")
     public String logout() {
-        System.out.println("Bye bye");
         return "redirect:/logout";
     }
 

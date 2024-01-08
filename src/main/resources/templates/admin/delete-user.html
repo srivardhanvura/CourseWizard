@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
+  <title>Delete User</title>
+
+  <script th:inline="javascript">
+          function findStudent(){
+            var paragraph = document.getElementById('noResults');
+            var table = document.getElementById('userTable');
+            paragraph.style.display = 'none';
+            table.style.display = 'none';
+            var errorSpan = document.getElementById('error');
+            errorSpan.style.display = 'none';
+            var userName = $('#userName').val().trim();
+            if(userName && userName.length < 3){
+              errorSpan.textContent = 'Input should be more than 2 characters';
+              errorSpan.style.display = 'inline';
+            }
+            else if (userName) {
+                  $.ajax({
+                      type: 'GET',
+                      url: '/admin/studentFromUserName/' + userName,
+                      success: function(data) {
+                        if(data.length == 0) {
+                          paragraph.style.display = 'block';
+                        }
+                        else {
+                          var tBody = $('#tableBody');
+                          tBody.empty().append('');
+                          $.each(data, function(index, student) {
+                              var tr = '<tr><td>' + student.userName + '</td><td>' + student.email + '</td><td>';
+                              tr +=  '<a href="/admin/removeStudent/' + student.id + '" class="btn btn-danger mb-3">Delete</a>';
+                              tr += '</td></tr>';
+                              tBody.append(tr);
+                          });
+                          table.style.display = 'block';
+                        }
+                      },
+                      error: function(xhr, status, error) {
+                          console.log("Error occurred: " + error);
+                          alert("An error occurred while fetching the student. Please try again later.");
+                      }
+                  });
+              }
+          }
+    </script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+
+  <script th:inline="javascript">
+          function findInstructor(){
+            var paragraph = document.getElementById('noResults');
+            var table = document.getElementById('userTable');
+            paragraph.style.display = 'none';
+            table.style.display = 'none';
+            var errorSpan = document.getElementById('error');
+            errorSpan.style.display = 'none';
+            var userName = $('#userName').val().trim();
+            if(userName && userName.length < 3){
+              errorSpan.textContent = 'Input should be more than 2 characters';
+              errorSpan.style.display = 'inline';
+            }
+            else if (userName) {
+                  $.ajax({
+                      type: 'GET',
+                      url: '/admin/instructorFromUserName/' + userName,
+                      success: function(data) {
+                        if(data.length == 0) {
+                          paragraph.style.display = 'block';
+                        }
+                        else {
+                          var tBody = $('#tableBody');
+                          tBody.empty().append('');
+                          $.each(data, function(index, instructor) {
+                              var tr = '<tr><td>' + instructor.userName + '</td><td>' + instructor.email + '</td><td>';
+                              tr +=  '<a href="/admin/removeInstructor/' + instructor.id + '" class="btn btn-danger mb-3">Delete</a>';
+                              tr += '</td></tr>';
+                              tBody.append(tr);
+                          });
+                          table.style.display = 'block';
+                        }
+                      },
+                      error: function(xhr, status, error) {
+                          console.log("Error occurred: " + error);
+                          alert("An error occurred while fetching the student. Please try again later.");
+                      }
+                  });
+              }
+          }
+    </script>
+
+</head>
+<body>
+<div th:replace="fragments/admin-navbar :: navbar"></div>
+<div class="container mt-5">
+  <form action="#">
+    <div class="mb-3">
+      <label for="userName" class="form-label">User Name</label>
+      <input type="text" class="form-control" id="userName" placeholder="Enter User Name" required>
+      <span id="error" style="color: red; display: none;"></span>
+    </div>
+    <button type="button" id="searchStudent" th:if="${userType == 'student'}" onclick="findStudent()" class="btn btn-primary">Search</button>
+    <button type="button" id="searchInst" th:if="${userType == 'instructor'}" onclick="findInstructor()" class="btn btn-primary">Search</button>
+    <p class="mt-5" style="display: none;" id="noResults">No search results.</p>
+  </form>
+  <table id="userTable" style="display: none;" class="table mt-4 table-dark table-striped">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody id="tableBody"></tbody>
+  </table>
+</div>
+
+<!-- Include Bootstrap JS and Popper.js (for dropdowns, tooltips, and popovers) -->
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+</body>
+</html>

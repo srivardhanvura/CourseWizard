@@ -6,22 +6,22 @@
     <title>Admin Home</title>
     <style>
         .tile {
-            color: #fff;
             padding: 40px;
             border: 2px solid #ccc;
             border-radius: 10px;
             text-align: center;
             cursor: pointer;
             transition: background-color 0.3s ease;
+            margin-bottom: 20px;
         }
 
         .tile a {
-            color: #444444;
+            color: #000;
             text-decoration: none;
         }
 
         .tile:hover {
-            background-color: #333;
+            background-color: #f5f5f5;
         }
     </style>
 </head>
@@ -58,16 +58,9 @@
             </div>
         </div>
         <div class="col-md-6">
-            <div class="tile" style="background-color: #B2DBBF">
+            <div class="tile" style="background-color: #B2DCCE">
                 <a th:href="@{/admin/addInstructor}">
                     <h3>Add Instructor</h3>
-                </a>
-            </div>
-        </div>
-        <div class="col-md-6 mt-2">
-            <div class="tile" style="background-color: #C490E4">
-                <a th:href="@{/admin/deleteInstructor}">
-                    <h3>Delete Instructor</h3>
                 </a>
             </div>
         </div>

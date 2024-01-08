@@ -3,6 +3,7 @@ package com.project.coursewizard.controller;
 import com.project.coursewizard.dao.*;
 import com.project.coursewizard.entity.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -141,37 +142,91 @@ public class AdminController {
     @GetMapping("/removeCourse/{courseId}")
     public String removeCourse(@PathVariable("courseId") int courseId){
         Optional<Course> optionalCourse = courseDAO.findById(courseId);
-        Course course = null;
-        if(optionalCourse.isPresent()){
+        Course course;
+        if(optionalCourse.isPresent()) {
             course = optionalCourse.get();
+            course.setStatus("Inactive");
+            courseDAO.save(course);
         }
-        course.setStatus("Inactive");
-        courseDAO.save(course);
         return "redirect:/admin/home";
     }
 
     @GetMapping("/deleteInstructor")
-    public String deleteInstructor(){
-        return null;
+    public String deleteInstructor(Model model){
+        model.addAttribute("userType", "instructor");
+        return "admin/delete-user";
     }
 
     @GetMapping("/deleteStudent")
-    public String deleteStudent(){
-        return null;
+    public String deleteStudent(Model model){
+        model.addAttribute("userType", "student");
+        return "admin/delete-user";
+    }
+
+    @GetMapping("/studentFromUserName/{userName}")
+    @ResponseBody
+    public List<Student> findStudentFromUserName(@PathVariable("userName") String userName){
+        List<Student> students = studentDAO.findByUserNameStartingWith(userName);
+        if(students.size() == 0){
+            return new ArrayList<>();
+        }
+        return students;
+    }
+
+    @GetMapping("/removeStudent/{id}")
+    public String removeStudent(@PathVariable("id") int id){
+        Student student = studentDAO.findById(id).orElseThrow();
+        userDAO.delete(userDAO.findByUserName(student.getUserName()).get(0));
+        studentDAO.delete(student);
+        return "admin/admin-home";
+    }
+
+    @GetMapping("/instructorFromUserName/{userName}")
+    @ResponseBody
+    public List<Instructor> findInstructorFromUserName(@PathVariable("userName") String userName){
+        List<Instructor> instructors = instructorDAO.findByUserNameStartingWith(userName);
+        if(instructors.size() == 0){
+            return new ArrayList<>();
+        }
+        return instructors;
+    }
+
+    @GetMapping("/removeInstructor/{id}")
+    public String removeInstructor(@PathVariable("id") int id){
+        Instructor instructor = instructorDAO.findById(id).orElseThrow();
+
+        List<Course> courses = courseDAO.findAllCoursesByInstructorId(instructor.getId());
+        for(Course course:courses){
+            course.setStatus("Inactive");
+            course.setInstructor(null);
+        }
+        User user = userDAO.findByUserName(instructor.getUserName()).get(0);
+
+        courseDAO.saveAll(courses);
+        userDAO.delete(user);
+        instructorDAO.delete(instructor);
+        
+        return "admin/admin-home";
     }
 
     @GetMapping("/allCourses")
-    public String getAllCourses(){
-        return null;
+    public String getAllCourses(Model model){
+        List<Course> courses = courseDAO.findAll(Sort.by(Sort.Direction.ASC, "code"));
+        model.addAttribute("courses", courses);
+        return "admin/all-courses";
     }
 
     @GetMapping("/allInstructors")
-    public String getAllInstructors(){
-        return null;
+    public String getAllInstructors(Model model){
+        List<Instructor> instructors = instructorDAO.findAll(Sort.by(Sort.Direction.ASC, "department"));
+        model.addAttribute("instructors", instructors);
+        return "admin/all-users";
     }
 
     @GetMapping("/allStudents")
-    public String getAllStudents(){
-        return null;
+    public String getAllStudents(Model model){
+        List<Student> students = studentDAO.findAll(Sort.by(Sort.Direction.ASC, "department"));
+        model.addAttribute("students", students);
+        return "admin/all-users";
     }
 }

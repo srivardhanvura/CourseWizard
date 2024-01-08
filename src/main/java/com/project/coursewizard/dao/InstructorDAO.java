@@ -20,4 +20,6 @@ public interface InstructorDAO extends JpaRepository<Instructor, Integer> {
 
     @Query("select i from Instructor i JOIN FETCH i.courses where i.id = :id")
     Instructor findCoursesByInstructorId(@Param("id") int id);
+
+    List<Instructor> findByUserNameStartingWith(String prefix);
 }
