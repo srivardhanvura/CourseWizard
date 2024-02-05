@@ -21,8 +21,8 @@ public class Config {
     public UserDetailsManager memoryUserDetailsManager(DataSource dataSource){
         JdbcUserDetailsManager userDetailsManager = new JdbcUserDetailsManager(dataSource);
 
-        userDetailsManager.setUsersByUsernameQuery("SELECT username, pwd, enabled FROM users where username=?");
-        userDetailsManager.setAuthoritiesByUsernameQuery("SELECT user_id, role FROM roles where user_id=?");
+        userDetailsManager.setUsersByUsernameQuery("SELECT username, pwd, enabled FROM course_wizard.users where username=?");
+        userDetailsManager.setAuthoritiesByUsernameQuery("SELECT user_id, role FROM course_wizard.roles where user_id=?");
 
         return userDetailsManager;
     }
